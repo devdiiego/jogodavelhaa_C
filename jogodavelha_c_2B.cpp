@@ -3,6 +3,8 @@
 #include <string.h>
 #include <locale.h>
 
+/* Jogo da Velha. Projeto para TÃ©cnicas e Desenvolvimento de Algoritmos */
+
 // Estrutura para armazenar os dados de cada jogador
 struct Jogador {
     char nome[50];   // Nome do jogador
@@ -79,31 +81,18 @@ void salvarRanking(struct Jogador jogadores[2]) {
 
 // Função para mostrar o ranking
 void mostrarRanking() {
-    FILE *arquivo = fopen("ranking.txt", "r+");  // Abre o arquivo em modo leitura e escrita
-    if (!arquivo) {
+    FILE *arquivo = fopen("ranking.txt", "r");  // Abre o arquivo em modo leitura
+    if (arquivo == NULL) {
         printf("Erro ao abrir o arquivo de ranking!\n");
         return;
     }
 
-    int vitoriasJogador1 = 0, vitoriasJogador2 = 0;
     char linha[100];
-
-    // Lê as vitórias de cada jogador e exibe o ranking
+    printf("\nRanking:\n");
+    // Lê o arquivo linha por linha e exibe
     while (fgets(linha, sizeof(linha), arquivo)) {
-        if (strstr(linha, "Jogador 1")) sscanf(linha, "Jogador 1: %d", &vitoriasJogador1);
-        if (strstr(linha, "Jogador 2")) sscanf(linha, "Jogador 2: %d", &vitoriasJogador2);
+        printf("%s", linha);
     }
-
-    // Exibe o ranking
-    printf("\nRanking:\nJogador 1: %d vitórias\nJogador 2: %d vitórias\n", vitoriasJogador1, vitoriasJogador2);
-
-    // Incrementa a vitória de Jogador 1 como exemplo
-    vitoriasJogador1++;
-
-    // Volta ao início do arquivo e sobrescreve com as vitórias atualizadas
-    rewind(arquivo);
-    fprintf(arquivo, "Jogador 1: %d\nJogador 2: %d\n", vitoriasJogador1, vitoriasJogador2);
-
     fclose(arquivo);  // Fecha o arquivo
 }
 
