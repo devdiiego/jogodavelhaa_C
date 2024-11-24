@@ -3,31 +3,29 @@
 #include <string.h>
 #include <locale.h>
 
-/* Jogo da Velha. Projeto para T√©cnicas e Desenvolvimento de Algoritmos */
-
 // Estrutura para armazenar os dados de cada jogador
 struct Jogador {
     char nome[50];   // Nome do jogador
-    int vitorias;    // N˙mero de vitÛrias do jogador
+    int vitorias;    // N√∫mero de vit√≥rias do jogador
 };
 
-// FunÁ„o para ler um n˙mero inteiro e garantir que a entrada seja v·lida
+// Fun√ß√£o para ler um n√∫mero inteiro e garantir que a entrada seja v√°lida
 int lerNumero() {
     int numero;
-    while (scanf("%d", &numero) != 1) {  // Verifica se a entrada È um n˙mero
-        printf("\nOpÁ„o Inv·lida! Digite um n˙mero: \n ");
+    while (scanf("%d", &numero) != 1) {  // Verifica se a entrada √© um n√∫mero
+        printf("\nOp√ß√£o Inv√°lida! Digite um n√∫mero: \n ");
         while (getchar() != '\n');  // Limpa o buffer
     }
-    return numero;  // Retorna o n˙mero inserido
+    return numero;  // Retorna o n√∫mero inserido
 }
 
-// FunÁ„o para exibir o tabuleiro do jogo
+// Fun√ß√£o para exibir o tabuleiro do jogo
 void exibirTabuleiro(char **jogo) {
     // Loop para percorrer as linhas e colunas do tabuleiro
     for (int l = 0; l < 3; l++) {
         for (int c = 0; c < 3; c++) {
-            if (c == 0) printf("\t");  // Adiciona espaÁamento ‡ esquerda
-            printf(" %c ", jogo[l][c]);  // Exibe a cÈlula atual
+            if (c == 0) printf("\t");  // Adiciona espa√ßamento √† esquerda
+            printf(" %c ", jogo[l][c]);  // Exibe a c√©lula atual
             if (c < 2) printf("|");  // Exibe o separador entre as colunas
         }
         if (l < 2) printf("\n\t-----------\n");  // Adiciona separador entre as linhas
@@ -35,7 +33,7 @@ void exibirTabuleiro(char **jogo) {
     }
 }
 
-// FunÁ„o para verificar se h· um vencedor
+// Fun√ß√£o para verificar se h√° um vencedor
 int verificarVencedor(char **jogo) {
     // Verifica se algum jogador venceu em linhas, colunas ou diagonais
     for (int i = 0; i < 3; i++) {
@@ -51,21 +49,21 @@ int verificarVencedor(char **jogo) {
         return 1;  // Retorna 1 se houver um vencedor
     }
 
-    return 0;  // Retorna 0 se n„o houver vencedor
+    return 0;  // Retorna 0 se n√£o houver vencedor
 }
 
-// FunÁ„o para verificar se o jogo deu velha
+// Fun√ß√£o para verificar se o jogo deu velha
 int jogoVelha(char **jogo) {
-    // Verifica se todas as cÈlulas est„o preenchidas
+    // Verifica se todas as c√©lulas est√£o preenchidas
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            if (jogo[i][j] == ' ') return 0;  // Se houver cÈlula vazia, o jogo n„o terminou
+            if (jogo[i][j] == ' ') return 0;  // Se houver c√©lula vazia, o jogo n√£o terminou
         }
     }
-    return 1;  // Se n„o houver cÈlulas vazias, deu velha
+    return 1;  // Se n√£o houver c√©lulas vazias, deu velha
 }
 
-// FunÁ„o para salvar o ranking em arquivo
+// Fun√ß√£o para salvar o ranking em arquivo
 void salvarRanking(struct Jogador jogadores[2]) {
     FILE *arquivo = fopen("ranking.txt", "a");  // Abre o arquivo em modo append
     if (arquivo == NULL) {
@@ -73,46 +71,59 @@ void salvarRanking(struct Jogador jogadores[2]) {
         return;
     }
 
-    // Grava as vitÛrias de cada jogador no arquivo
-    fprintf(arquivo, "%s: %d vitÛrias\n", jogadores[0].nome, jogadores[0].vitorias);
-    fprintf(arquivo, "%s: %d vitÛrias\n", jogadores[1].nome, jogadores[1].vitorias);
+    // Grava as vit√≥rias de cada jogador no arquivo
+    fprintf(arquivo, "%s: %d vit√≥rias\n", jogadores[0].nome, jogadores[0].vitorias);
+    fprintf(arquivo, "%s: %d vit√≥rias\n", jogadores[1].nome, jogadores[1].vitorias);
     fclose(arquivo);  // Fecha o arquivo
 }
 
-// FunÁ„o para mostrar o ranking
+// Fun√ß√£o para mostrar o ranking
 void mostrarRanking() {
-    FILE *arquivo = fopen("ranking.txt", "r");  // Abre o arquivo em modo leitura
-    if (arquivo == NULL) {
+    FILE *arquivo = fopen("ranking.txt", "r+");  // Abre o arquivo em modo leitura e escrita
+    if (!arquivo) {
         printf("Erro ao abrir o arquivo de ranking!\n");
         return;
     }
 
+    int vitoriasJogador1 = 0, vitoriasJogador2 = 0;
     char linha[100];
-    printf("\nRanking:\n");
-    // LÍ o arquivo linha por linha e exibe
+
+    // L√™ as vit√≥rias de cada jogador e exibe o ranking
     while (fgets(linha, sizeof(linha), arquivo)) {
-        printf("%s", linha);
+        if (strstr(linha, "Jogador 1")) sscanf(linha, "Jogador 1: %d", &vitoriasJogador1);
+        if (strstr(linha, "Jogador 2")) sscanf(linha, "Jogador 2: %d", &vitoriasJogador2);
     }
+
+    // Exibe o ranking
+    printf("\nRanking:\nJogador 1: %d vit√≥rias\nJogador 2: %d vit√≥rias\n", vitoriasJogador1, vitoriasJogador2);
+
+    // Incrementa a vit√≥ria de Jogador 1 como exemplo
+    vitoriasJogador1++;
+
+    // Volta ao in√≠cio do arquivo e sobrescreve com as vit√≥rias atualizadas
+    rewind(arquivo);
+    fprintf(arquivo, "Jogador 1: %d\nJogador 2: %d\n", vitoriasJogador1, vitoriasJogador2);
+
     fclose(arquivo);  // Fecha o arquivo
 }
 
-// FunÁ„o para exibir os crÈditos
+// Fun√ß√£o para exibir os cr√©ditos
 void exibirCreditos() {
     printf("\n\t\t\t\tCREDITOS\n\n");
-    printf("\n\tDesenvolvido por Diego Feitosa, Alex Dantas, JosÈ Kleyton e Handrey Kaleu.\n");
-    printf("\n\tAlunos do UNIP  - CiÍncia da ComputaÁ„o\n");
-    printf("\n\tTurma: TÈcnicas e Desenvolvimento de Algoritmos - 2B 2024.2\n\n");
+    printf("\n\tDesenvolvido por Diego Feitosa, Alex Dantas, Jos√© Kleyton e Handrey Kaleu.\n");
+    printf("\n\tAlunos do UNIP√ä - Ci√™ncia da Computa√ß√£o\n");
+    printf("\n\tTurma: T√©cnicas e Desenvolvimento de Algoritmos - 2B 2024.2\n\n");
 }
 
 int main() {
-    setlocale(LC_ALL, "portuguese");  // Define o idioma como portuguÍs
+    setlocale(LC_ALL, "portuguese");  // Define o idioma como portugu√™s
 
     struct Jogador jogadores[2];  // Array de jogadores
     int numero, jogador, linha, coluna, ganhou, jogadas;
     char **jogo;
     int loop = 1;
 
-    // Aloca memÛria dinamicamente para a matriz jogo
+    // Aloca mem√≥ria dinamicamente para a matriz jogo
     jogo = (char **)malloc(3 * sizeof(char *));
     for (int i = 0; i < 3; i++) {
         jogo[i] = (char *)malloc(3 * sizeof(char));
@@ -123,10 +134,10 @@ int main() {
         printf("\n\tJOGO DA VELHA\n\n");
         printf("1 - JOGAR\n");
         printf("2 - VER RANKING\n");
-        printf("3 - CR…DITOS\n");
+        printf("3 - CR√âDITOS\n");
         printf("4 - SAIR\n\n");
-        printf("Digite a opÁ„o desejada: ");
-        numero = lerNumero();  // LÍ a opÁ„o escolhida
+        printf("Digite a op√ß√£o desejada: ");
+        numero = lerNumero();  // L√™ a op√ß√£o escolhida
 
         switch (numero) {
             case 1: {
@@ -142,7 +153,7 @@ int main() {
                 // Inicializa a matriz do tabuleiro
                 for (int l = 0; l < 3; l++) {
                     for (int c = 0; c < 3; c++) {
-                        jogo[l][c] = ' ';  // Preenche todas as cÈlulas com espaÁo
+                        jogo[l][c] = ' ';  // Preenche todas as c√©lulas com espa√ßo
                     }
                 }
 
@@ -157,13 +168,13 @@ int main() {
                         printf("\nJOGADOR 2: Digite a linha e a coluna (0 a 2): ");
                     }
 
-                    // Loop para garantir que a jogada seja v·lida
+                    // Loop para garantir que a jogada seja v√°lida
                     do {
                         if (scanf("%d %d", &linha, &coluna) != 2 || linha < 0 || linha > 2 || coluna < 0 || coluna > 2 || jogo[linha][coluna] != ' ') {
-                            printf("\nEntrada inv·lida! Certifique-se de que a linha e a coluna est„o entre 0 e 2, e a cÈlula est· vazia.\n");
+                            printf("\nEntrada inv√°lida! Certifique-se de que a linha e a coluna est√£o entre 0 e 2, e a c√©lula est√° vazia.\n");
                             while (getchar() != '\n');  // Limpar o buffer
                         } else {
-                            break;  // Jogada v·lida
+                            break;  // Jogada v√°lida
                         }
                     } while (1);
 
@@ -182,10 +193,10 @@ int main() {
                         exibirTabuleiro(jogo);  // Exibe o tabuleiro
                         if (jogador == 2) {
                             printf("\nO jogador 1 (%s) venceu!\n", jogadores[0].nome);
-                            jogadores[0].vitorias++;  // Incrementa a vitÛria do jogador 1
+                            jogadores[0].vitorias++;  // Incrementa a vit√≥ria do jogador 1
                         } else {
                             printf("\nO jogador 2 (%s) venceu!\n", jogadores[1].nome);
-                            jogadores[1].vitorias++;  // Incrementa a vitÛria do jogador 2
+                            jogadores[1].vitorias++;  // Incrementa a vit√≥ria do jogador 2
                         }
                         ganhou = 1;  // Jogo terminado
                     }
@@ -197,7 +208,7 @@ int main() {
                         ganhou = 1;  // Jogo terminou em velha
                     }
 
-                } while (!ganhou);  // Continua enquanto ninguÈm venceu ou deu velha
+                } while (!ganhou);  // Continua enquanto ningu√©m venceu ou deu velha
 
                 salvarRanking(jogadores);  // Salva o ranking
                 break;
@@ -206,30 +217,29 @@ int main() {
                 mostrarRanking();  // Exibe o ranking
                 break;
             case 3:
-                exibirCreditos();  // Exibe os crÈditos
+                exibirCreditos();  // Exibe os cr√©ditos
                 break;
             case 4:
                 printf("\nSaindo do jogo...\n");
                 loop = 0;  // Sai do loop
                 break;
             default:
-                printf("\nOpÁ„o Inv·lida!\n");  // Caso o usu·rio digite uma opÁ„o inv·lida
+                printf("\nOp√ß√£o Inv√°lida!\n");  // Caso o usu√°rio digite uma op√ß√£o inv√°lida
                 break;
         }
 
-        // Pergunta se o usu·rio deseja voltar ao menu ou sair
+        // Pergunta se o usu√°rio deseja voltar ao menu ou sair
         if (loop != 0) {
             printf("\nDigite '1' para voltar ao menu, ou '0' para sair do jogo.\n");
-            loop = lerNumero();  // LÍ a opÁ„o
+            loop = lerNumero();  // L√™ a op√ß√£o
         }
     }
 
-    // Libera a memÛria alocada para o tabuleiro
+    // Libera a mem√≥ria alocada para o tabuleiro
     for (int i = 0; i < 3; i++) {
         free(jogo[i]);  // Libera cada linha do tabuleiro
     }
-    free(jogo);  // Libera a memÛria da matriz de jogo
+    free(jogo);  // Libera a mem√≥ria da matriz de jogo
 
     return 0;
 }
-
